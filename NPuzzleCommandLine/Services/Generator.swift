@@ -136,6 +136,8 @@ final class Generator {
                         print(" \(element)", terminator: "")
                     }
                 })
+                
+                PuzzleSolver(startArray: puzzle)
             } else {
                 print("Exit 🕳")
             }

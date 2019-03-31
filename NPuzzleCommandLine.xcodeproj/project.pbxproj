@@ -12,6 +12,7 @@
 		0899E6AD223D43B000277651 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0899E6AC223D43B000277651 /* String.swift */; };
 		0899E6AF223D43CA00277651 /* ArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0899E6AE223D43CA00277651 /* ArgumentParser.swift */; };
 		1FC017322240034100FB9F5A /* PuzzleSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC017312240034100FB9F5A /* PuzzleSolver.swift */; };
+		5B8A1C8222513830008DA690 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8A1C8122513830008DA690 /* Node.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +34,7 @@
 		0899E6AC223D43B000277651 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		0899E6AE223D43CA00277651 /* ArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArgumentParser.swift; sourceTree = "<group>"; };
 		1FC017312240034100FB9F5A /* PuzzleSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleSolver.swift; sourceTree = "<group>"; };
+		5B8A1C8122513830008DA690 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				0899E6A1223D423600277651 /* main.swift */,
+				5B8A1C8022513809008DA690 /* Models */,
 				0899E6A8223D435300277651 /* Services */,
 				0899E6AB223D439700277651 /* Extensions */,
 			);
@@ -88,6 +91,14 @@
 				0899E6AC223D43B000277651 /* String.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		5B8A1C8022513809008DA690 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5B8A1C8122513830008DA690 /* Node.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -151,6 +162,7 @@
 				1FC017322240034100FB9F5A /* PuzzleSolver.swift in Sources */,
 				0899E6AD223D43B000277651 /* String.swift in Sources */,
 				0899E6A2223D423600277651 /* main.swift in Sources */,
+				5B8A1C8222513830008DA690 /* Node.swift in Sources */,
 				0899E6AA223D436800277651 /* Generator.swift in Sources */,
 				0899E6AF223D43CA00277651 /* ArgumentParser.swift in Sources */,
 			);
