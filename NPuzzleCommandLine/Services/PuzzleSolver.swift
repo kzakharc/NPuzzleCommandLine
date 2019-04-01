@@ -83,7 +83,7 @@ final class PuzzleSolver {
                     if !openList.contains(neighborNode) {
                         neighborNode.g = currentNode.g + 1
                         neighborNode.parentValue = currentNode.parentValue
-                        //Need to refactor
+                        
                         openList.append(neighborNode)
                     } else {
                         
