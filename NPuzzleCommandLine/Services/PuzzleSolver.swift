@@ -54,8 +54,72 @@ final class PuzzleSolver {
         }
         
         repeat {
-            //let currentNode
+            // Get the square with the lowest F score
+            var currentNode = obtainNodeWithLowestFScore()
+            
+            // add the current square to the closed list
+            closedList.append(currentNode)
+            // remove it to the open list
+            openList.enumerated().forEach { index, element in
+                if currentNode.value == element.value {
+                    openList.remove(at: index)
+                }
+            }
+            
+            var equalsCount = 0
+            startArray.enumerated().forEach { index, _ in
+                if startArray[index] == goalArray[index] {
+                    equalsCount += 1
+                }
+            }
+            if equalsCount == startArray.count {
+                break
+            }
+            
+            // Retrieve all its walkable adjacent nodes
+            let acentNodes = obtainNeighborsNodes(for: currentNode)
+            acentNodes.forEach { neighborNode in
+                if !closedList.contains(neighborNode) {
+                    if !openList.contains(neighborNode) {
+                        neighborNode.g = currentNode.g + 1
+                        neighborNode.parentValue = currentNode.parentValue
+                        
+                        openList.append(neighborNode)
+                    } else {
+                        
+                    }
+                }
+            }
+            
         } while !openList.isEmpty
+    }
+    
+    func obtainNeighborsNodes(for node: Node) -> [Node] {
+        let y = Int(node.coordinates.y)
+        let x = Int(node.coordinates.x)
+        
+        var neighbor = [Node]()
+        x > 0 ? neighbor.append(obtainNeighbor(from: .left, for: node)) : ()
+        y > 0  ? neighbor.append(obtainNeighbor(from: .up, for: node)) : ()
+        x < startArray.count - 1 ? neighbor.append(obtainNeighbor(from: .right, for: node)) : ()
+        y < startArray.count - 1  ? neighbor.append(obtainNeighbor(from: .down, for: node)) : ()
+        return neighbor
+    }
+    
+    func obtainNeighbor(from side: Move, for node: Node) -> Node {
+        var neighbor = node
+        
+        switch side {
+        case .up:
+            neighbor = startArray[Int(node.coordinates.y - 1)][Int(node.coordinates.x)]
+        case .down:
+            neighbor = startArray[Int(node.coordinates.y + 1)][Int(node.coordinates.x)]
+        case .left:
+            neighbor = startArray[Int(node.coordinates.y)][Int(node.coordinates.x - 1)]
+        case .right:
+            neighbor = startArray[Int(node.coordinates.y)][Int(node.coordinates.x + 1)]
+        }
+        return neighbor
     }
     
     func obtainNodeWithLowestFScore() -> Node {
