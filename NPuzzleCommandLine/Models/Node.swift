@@ -8,13 +8,13 @@
 
 import Foundation
 
-final class Node {
+struct Node {
     
     var value: Int
     var coordinates: CGPoint
-    var g = 0
+    var g: CGFloat = 0
     
-    var parentValue: Int?
+    //var parentNode: Node? = nil
     
     init(value: Int, coordinates: CGPoint) {
         self.value = value

@@ -137,7 +137,7 @@ final class Generator {
                     }
                 })
                 
-                PuzzleSolver(startArray: puzzle)
+                PuzzleSolver(with: puzzle)
             } else {
                 print("Exit 🕳")
             }

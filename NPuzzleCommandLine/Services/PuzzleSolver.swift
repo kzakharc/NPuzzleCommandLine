@@ -36,26 +36,55 @@ final class PuzzleSolver {
     var startArray = [[Node]]()
     var goalArray = [[Node]]()
     
-    init(startArray: [Int]) {
-        self.startArray = makeNodeArray(startArray)
+    init(with array: [Int]) {
+        self.startArray = makeNodeArray(array)
         
         let goal = Generator().makeGoal(with: startArray.count)
         self.goalArray = makeNodeArray(goal)
+        
+        aStar()
     }
     
-    func aStar() {
-        var emptyNode = startArray[0][0]
-        startArray.forEach { smallArray in
+    private func obtainEmptyNode(from array: [[Node]]) -> Node {
+        var emptyNode = array[0][0]
+        array.forEach { smallArray in
             smallArray.forEach({ node in
                 if node.value == 0 {
                     emptyNode = node
                 }
             })
         }
+        return emptyNode
+    }
+    
+    func aStar() {
+        let emptyNode = obtainEmptyNode(from: startArray)
         
+        openList.append(emptyNode)
         repeat {
+            
+            startArray.forEach({ array in
+                array.enumerated().forEach({ (index, element) in
+                    if index == 0 || index % array.count == 0 {
+                        print(element.value, terminator: "")
+                    } else if (index + 1) % array.count == 0 {
+                        print(" \(element.value)")
+                    } else {
+                        print(" \(element.value)", terminator: "")
+                    }
+                })
+            })
+            print("================================")
+            
             // Get the square with the lowest F score
             var currentNode = obtainNodeWithLowestFScore()
+            let nowEmptyNode = obtainEmptyNode(from: startArray)
+            
+            swapNodes(firstNode: currentNode, secondNode: nowEmptyNode)
+            
+            let qqnowEmptyNode = obtainEmptyNode(from: startArray)
+            
+            currentNode = qqnowEmptyNode
             
             // add the current square to the closed list
             closedList.append(currentNode)
@@ -78,20 +107,58 @@ final class PuzzleSolver {
             
             // Retrieve all its walkable adjacent nodes
             let acentNodes = obtainNeighborsNodes(for: currentNode)
-            acentNodes.forEach { neighborNode in
+            acentNodes.enumerated().forEach { (index, neighborNode) in
                 if !closedList.contains(neighborNode) {
                     if !openList.contains(neighborNode) {
-                        neighborNode.g = currentNode.g + 1
-                        neighborNode.parentValue = currentNode.parentValue
+                        
+                        //acentNodes[index].g = currentNode.g + 1
+                        
+                        //neighborNode.parentNode = currentNode
                         
                         openList.append(neighborNode)
                     } else {
+                        let f = countFakeScore(for: neighborNode)
                         
+                        let finnestNode = obtainNodeWithLowestFScore()
+                        if f == countFakeScore(for: finnestNode) {
+                            
+                            _ = obtainEmptyNode(from: startArray)
+                            
+                            //neighborNode.parentNode = currentEmptyNode
+                        
+                            //swapNodes(firstNode: currentEmptyNode, secondNode: neighborNode)
+
+//                            startArray.forEach({ array in
+//                                array.enumerated().forEach({ (index, element) in
+//                                    if index == 0 || index % array.count == 0 {
+//                                        print(element.value, terminator: "")
+//                                    } else if (index + 1) % array.count == 0 {
+//                                        print(" \(element.value)")
+//                                    } else {
+//                                        print(" \(element.value)", terminator: "")
+//                                    }
+//                                })
+//                            })
+//                            print("================================")
+                        }
                     }
                 }
             }
             
         } while !openList.isEmpty
+        
+        startArray.forEach({ array in
+            array.enumerated().forEach({ (index, element) in
+                if index == 0 || index % array.count == 0 {
+                    print(element.value, terminator: "")
+                } else if (index + 1) % array.count == 0 {
+                    print(" \(element.value)")
+                } else {
+                    print(" \(element.value)", terminator: "")
+                }
+            })
+        })
+        print("+++++++++++++++++++++++++++++")
     }
     
     func obtainNeighborsNodes(for node: Node) -> [Node] {
@@ -122,15 +189,81 @@ final class PuzzleSolver {
         return neighbor
     }
     
+    private func fakeSwap(with node: Node) -> (Node, [[Node]]) {
+        
+        var finnestNode = node
+        var fakeStartArray = startArray
+        
+        var emptyNode0 = obtainEmptyNode(from: startArray)
+        
+        let secondCoordinates = finnestNode.coordinates
+        finnestNode.coordinates = emptyNode0.coordinates
+        emptyNode0.coordinates = secondCoordinates
+        
+        fakeStartArray[Int(emptyNode0.coordinates.y)][Int(emptyNode0.coordinates.x)] = emptyNode0
+        fakeStartArray[Int(finnestNode.coordinates.y)][Int(finnestNode.coordinates.x)] = finnestNode
+        return (finnestNode, fakeStartArray)
+    }
+    
     func obtainNodeWithLowestFScore() -> Node {
+        let tNode = openList[0]
+        var (finnestNode, fakeStartArray) = fakeSwap(with: tNode)
+
+        var currentF = countFScore(for: finnestNode)
+        
+        openList.forEach { node11 in
+            
+            var (node, fakeStartArray1) = fakeSwap(with: node11)
+            
+            let f = countFScore(for: node)
+            
+            if f < currentF {
+                finnestNode = node11
+                currentF = f
+            }
+        }
+        return finnestNode
+    }
+    
+    func countFakeScore(for node: Node) -> CGFloat {
+        
+        var tmpNode = node
+        var fakeStartArray = startArray
+        
+        var emptyNode = obtainEmptyNode(from: startArray)
+        
+        let secondCoordinates = tmpNode.coordinates
+        tmpNode.coordinates = emptyNode.coordinates
+        emptyNode.coordinates = secondCoordinates
+        
+        fakeStartArray[Int(emptyNode.coordinates.y)][Int(emptyNode.coordinates.x)] = emptyNode
+        fakeStartArray[Int(tmpNode.coordinates.y)][Int(tmpNode.coordinates.x)] = tmpNode
+        
+        let h = CGPointManhattanDistance(from: tmpNode.coordinates, to: obtainGoalCGPoint(for: tmpNode))
+        let g: CGFloat = tmpNode.g
+        let f = h + g
+        
+        return f
+    }
+
+    
+    func countFScore(for node: Node) -> CGFloat {
+        let h = CGPointManhattanDistance(from: node.coordinates, to: obtainGoalCGPoint(for: node))
+        let g: CGFloat = node.g
+        let f = h + g
+        
+        return f
+    }
+    
+    func obtainNodeWithLowestHScore() -> Node {
         var finnestNode = openList[0]
-        var currentF = CGPointManhattanDistance(from: finnestNode.coordinates, to: obtainGoalCGPoint(for: finnestNode))
+        var currentH = CGPointManhattanDistance(from: finnestNode.coordinates, to: obtainGoalCGPoint(for: finnestNode))
         
         openList.forEach { node in
-            let f = CGPointManhattanDistance(from: node.coordinates, to: obtainGoalCGPoint(for: node))
-            if f < currentF {
+            let h = CGPointManhattanDistance(from: node.coordinates, to: obtainGoalCGPoint(for: node))
+            if h < currentH {
                 finnestNode = node
-                currentF = f
+                currentH = h
             }
         }
         return finnestNode
@@ -149,18 +282,31 @@ final class PuzzleSolver {
         return coordinates
     }
     
-    func swapNodes(node: Node, move: Move) {
+    func moveNode(node: Node, move: Move) {
         let goalY = Int(abs(node.coordinates.y + move.coordinates().y))
         let goalX = Int(abs(node.coordinates.x + move.coordinates().x))
         
-        let secondNode = startArray[goalY][goalX]
+        var secondNode = startArray[goalY][goalX]
         
         let nodeCoordinates = node.coordinates
         secondNode.coordinates = nodeCoordinates
         
-        node.coordinates = CGPoint(x: goalX, y: goalY)
-        startArray[goalY][goalX] = node
+        var tmpNode = node
+        tmpNode.coordinates = CGPoint(x: goalX, y: goalY)
+        startArray[goalY][goalX] = tmpNode
         startArray[Int(secondNode.coordinates.y)][Int(secondNode.coordinates.x)] = secondNode
+    }
+    
+    func swapNodes(firstNode: Node, secondNode: Node) {
+        var first = firstNode
+        var second = secondNode
+        
+        let secondCoordinates = second.coordinates
+        second.coordinates = first.coordinates
+        first.coordinates = secondCoordinates
+        
+        startArray[Int(first.coordinates.y)][Int(first.coordinates.x)] = first
+        startArray[Int(second.coordinates.y)][Int(second.coordinates.x)] = second
     }
     
     private func makeNodeArray(_ array: [Int]) -> [[Node]] {
