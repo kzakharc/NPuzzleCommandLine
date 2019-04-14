@@ -58,11 +58,8 @@ final class PuzzleSolver {
     }
     
     func aStar() {
-        let emptyNode = obtainEmptyNode(from: startArray)
-        
-        openList.append(emptyNode)
         repeat {
-            
+            //print
             startArray.forEach({ array in
                 array.enumerated().forEach({ (index, element) in
                     if index == 0 || index % array.count == 0 {
@@ -77,24 +74,9 @@ final class PuzzleSolver {
             print("================================")
             
             // Get the square with the lowest F score
-            var currentNode = obtainNodeWithLowestFScore()
-            let nowEmptyNode = obtainEmptyNode(from: startArray)
-            
-            swapNodes(firstNode: currentNode, secondNode: nowEmptyNode)
-            
-            let qqnowEmptyNode = obtainEmptyNode(from: startArray)
-            
-            currentNode = qqnowEmptyNode
-            
-            // add the current square to the closed list
-            closedList.append(currentNode)
-            // remove it to the open list
-            openList.enumerated().forEach { index, element in
-                if currentNode.value == element.value {
-                    openList.remove(at: index)
-                }
-            }
-            
+            let currentNode = obtainEmptyNode(from: startArray)
+
+            /// Check if all ok
             var equalsCount = 0
             startArray.enumerated().forEach { index, _ in
                 if startArray[index] == goalArray[index] {
@@ -107,46 +89,25 @@ final class PuzzleSolver {
             
             // Retrieve all its walkable adjacent nodes
             let acentNodes = obtainNeighborsNodes(for: currentNode)
-            acentNodes.enumerated().forEach { (index, neighborNode) in
-                if !closedList.contains(neighborNode) {
-                    if !openList.contains(neighborNode) {
-                        
-                        //acentNodes[index].g = currentNode.g + 1
-                        
-                        //neighborNode.parentNode = currentNode
-                        
-                        openList.append(neighborNode)
-                    } else {
-                        let f = countFakeScore(for: neighborNode)
-                        
-                        let finnestNode = obtainNodeWithLowestFScore()
-                        if f == countFakeScore(for: finnestNode) {
-                            
-                            _ = obtainEmptyNode(from: startArray)
-                            
-                            //neighborNode.parentNode = currentEmptyNode
-                        
-                            //swapNodes(firstNode: currentEmptyNode, secondNode: neighborNode)
-
-//                            startArray.forEach({ array in
-//                                array.enumerated().forEach({ (index, element) in
-//                                    if index == 0 || index % array.count == 0 {
-//                                        print(element.value, terminator: "")
-//                                    } else if (index + 1) % array.count == 0 {
-//                                        print(" \(element.value)")
-//                                    } else {
-//                                        print(" \(element.value)", terminator: "")
-//                                    }
-//                                })
-//                            })
-//                            print("================================")
-                        }
-                    }
+            
+            acentNodes.forEach({ node in
+                 if !closedListContains(node) {
+                    openListContains(node) ? () : openList.append(node)
+                }
+            })
+            
+            let finnestNode = obtainNodeWithLowestFScore()
+            openList.enumerated().forEach { index, element in
+                if finnestNode.value == element.value {
+                    openList.remove(at: index)
                 }
             }
+            closedList.append(finnestNode)
             
+            swapNodes(firstNode: currentNode, secondNode: finnestNode)
         } while !openList.isEmpty
         
+        // print
         startArray.forEach({ array in
             array.enumerated().forEach({ (index, element) in
                 if index == 0 || index % array.count == 0 {
@@ -159,6 +120,24 @@ final class PuzzleSolver {
             })
         })
         print("+++++++++++++++++++++++++++++")
+    }
+    
+    private func closedListContains(_ node: Node) -> Bool {
+        for currentNode in closedList {
+            if currentNode.value == node.value {
+                return true
+            }
+        }
+        return false
+    }
+    
+    private func openListContains(_ node: Node) -> Bool {
+        for currentNode in openList {
+            if currentNode.value == node.value {
+                return true
+            }
+        }
+        return false
     }
     
     func obtainNeighborsNodes(for node: Node) -> [Node] {

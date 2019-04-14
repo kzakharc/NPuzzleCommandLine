@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		082F048A2263865600485683 /* PrintArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082F04892263865600485683 /* PrintArray.swift */; };
 		0899E6A2223D423600277651 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0899E6A1223D423600277651 /* main.swift */; };
 		0899E6AA223D436800277651 /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0899E6A9223D436800277651 /* Generator.swift */; };
 		0899E6AD223D43B000277651 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0899E6AC223D43B000277651 /* String.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		082F04892263865600485683 /* PrintArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintArray.swift; sourceTree = "<group>"; };
 		0899E69E223D423600277651 /* NPuzzleCommandLine */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NPuzzleCommandLine; sourceTree = BUILT_PRODUCTS_DIR; };
 		0899E6A1223D423600277651 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		0899E6A9223D436800277651 /* Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				0899E6A9223D436800277651 /* Generator.swift */,
 				0899E6AE223D43CA00277651 /* ArgumentParser.swift */,
 				1FC017312240034100FB9F5A /* PuzzleSolver.swift */,
+				082F04892263865600485683 /* PrintArray.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -163,6 +166,7 @@
 				0899E6AD223D43B000277651 /* String.swift in Sources */,
 				0899E6A2223D423600277651 /* main.swift in Sources */,
 				5B8A1C8222513830008DA690 /* Node.swift in Sources */,
+				082F048A2263865600485683 /* PrintArray.swift in Sources */,
 				0899E6AA223D436800277651 /* Generator.swift in Sources */,
 				0899E6AF223D43CA00277651 /* ArgumentParser.swift in Sources */,
 			);
