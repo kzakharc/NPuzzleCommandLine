@@ -139,7 +139,7 @@ final class ArgumentParser {
             }
             
             if input == "yes" {
-                print("Please enter parameter: [-s] - Forces generation of a solvable puzzle. Overrides -u.\n[-u] - Forces generation of an unsolvable puzzle")
+                print("Please enter parameter:\n[-s] - Forces generation of a solvable puzzle. Overrides -u.\n[-u] - Forces generation of an unsolvable puzzle")
                 while let input = readLine() {
                     guard input != "quit" else {
                         completion?(true)
@@ -158,7 +158,7 @@ final class ArgumentParser {
                         input.contains(Arguments.unsolvable.rawValue) {
                         print("Can't be both solvable AND unsolvable, dummy! 🤯")
                     } else {
-                        print("Please enter parameter: [-s] - Forces generation of a solvable puzzle. Overrides -u.\n[-u] - Forces generation of an unsolvable puzzle")
+                        print("Please enter parameter:\n[-s] - Forces generation of a solvable puzzle. Overrides -u.\n[-u] - Forces generation of an unsolvable puzzle")
                     }
                 }
             } else if input == "no" {

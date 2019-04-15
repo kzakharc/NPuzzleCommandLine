@@ -13,6 +13,8 @@
 		0899E6AF223D43CA00277651 /* ArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0899E6AE223D43CA00277651 /* ArgumentParser.swift */; };
 		1FC017322240034100FB9F5A /* PuzzleSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC017312240034100FB9F5A /* PuzzleSolver.swift */; };
 		5BBA7B2022647E1C005C9B0E /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA7B1F22647E1C005C9B0E /* Matrix.swift */; };
+		5BF044FC2264E540002E084B /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF044FB2264E540002E084B /* PriorityQueue.swift */; };
+		5BF044FF2264FC04002E084B /* PrintMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF044FE2264FC04002E084B /* PrintMatrix.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +37,8 @@
 		0899E6AE223D43CA00277651 /* ArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArgumentParser.swift; sourceTree = "<group>"; };
 		1FC017312240034100FB9F5A /* PuzzleSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuzzleSolver.swift; sourceTree = "<group>"; };
 		5BBA7B1F22647E1C005C9B0E /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		5BF044FB2264E540002E084B /* PriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
+		5BF044FE2264FC04002E084B /* PrintMatrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintMatrix.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +74,7 @@
 				0899E6A1223D423600277651 /* main.swift */,
 				5B8A1C8022513809008DA690 /* Models */,
 				0899E6A8223D435300277651 /* Services */,
+				5BF044FD2264FBDD002E084B /* Helpers */,
 				0899E6AB223D439700277651 /* Extensions */,
 			);
 			path = NPuzzleCommandLine;
@@ -99,6 +104,15 @@
 				5BBA7B1F22647E1C005C9B0E /* Matrix.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		5BF044FD2264FBDD002E084B /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				5BF044FB2264E540002E084B /* PriorityQueue.swift */,
+				5BF044FE2264FC04002E084B /* PrintMatrix.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,6 +178,8 @@
 				0899E6AD223D43B000277651 /* String.swift in Sources */,
 				0899E6A2223D423600277651 /* main.swift in Sources */,
 				0899E6AA223D436800277651 /* Generator.swift in Sources */,
+				5BF044FC2264E540002E084B /* PriorityQueue.swift in Sources */,
+				5BF044FF2264FC04002E084B /* PrintMatrix.swift in Sources */,
 				0899E6AF223D43CA00277651 /* ArgumentParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

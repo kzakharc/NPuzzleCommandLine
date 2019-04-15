@@ -30,7 +30,9 @@ enum Move {
 
 final class PuzzleSolver {
     
-    var openList = [Matrix]()
+    //var openList = [Matrix]()
+    var openList = PriorityQueue<Matrix>()
+    
     var closedList = [Matrix]()
     
     var startArray = [[Int]]()
@@ -46,36 +48,20 @@ final class PuzzleSolver {
     }
     
     func aStar() {
-        let matrix = Matrix(with: startArray)
+        print("All the way:")
+        printBorder(size: goalArray.count)
         
-        openList.append(matrix)
+        let matrix = Matrix(with: startArray)
+
+        openList.push(matrix)
         repeat {
             // Get the square with the lowest F score
             let currentMatrix = obtainMatrixWithTheLowestF()
             
-            
-            
-            currentMatrix.array.enumerated().forEach({ (_, smallArray) in
-                smallArray.enumerated().forEach({ (index, element) in
-                    if index == 0 || index % currentMatrix.array.count == 0 {
-                        print(element, terminator: "")
-                    } else if (index + 1) % currentMatrix.array.count == 0 {
-                        print(" \(element)")
-                    } else {
-                        print(" \(element)", terminator: "")
-                    }
-                })
-            })
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            
-            
-            
+            printAllWay(with: currentMatrix)
+
             closedList.append(currentMatrix)
-            openList.enumerated().forEach { index, element in
-                if element == currentMatrix {
-                    openList.remove(at: index)
-                }
-            }
+            openList.remove(currentMatrix)
             
             /// Check if all ok
             if currentMatrix.array == goalArray {
@@ -90,8 +76,9 @@ final class PuzzleSolver {
                     if !openList.contains(matrix) {
                         matrix.g += 1
                         matrix.parentMatrix = currentMatrix
-                        
-                        openList.append(matrix)
+                        matrix.currentF = countFScore(for: matrix)
+
+                        openList.push(matrix)
                     }
                 }
             }
