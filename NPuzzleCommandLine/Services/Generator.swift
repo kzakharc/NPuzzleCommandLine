@@ -100,7 +100,7 @@ final class Generator {
     }
     
     func generateCustomPuzzle() {
-        ArgumentParser().obtainCustomArguments { [weak self] (customSize, customIterations, customSolvability) in
+        ArgumentParser().obtainCustomArguments { [weak self] (customSize, customIterations, customSolvability, algoritm, heuristic) in
             guard let strongSelf = self else { return }
             
             if let customSize = customSize,
@@ -110,6 +110,7 @@ final class Generator {
                 strongSelf.solvability = customSolvability
                 strongSelf.iterations = customIterations
                 strongSelf.size = customSize
+                basicSolvability = customSolvability
                 
                 let solvabilityName = strongSelf.solvability == .solvable ? "solvable" : "unsolvable"
                 print("\nThis puzzle is \(solvabilityName)\n\(strongSelf.size)")
@@ -126,7 +127,7 @@ final class Generator {
                     }
                 })
 
-                PuzzleSolver(with: puzzle)
+                PuzzleSolver(with: puzzle, algoritm: algoritm, heuristic: heuristic)
             } else {
                 print("Exit 🕳")
             }

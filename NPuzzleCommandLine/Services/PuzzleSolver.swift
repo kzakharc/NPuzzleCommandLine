@@ -28,26 +28,47 @@ enum Move {
     }
 }
 
-final class PuzzleSolver {
+enum Heuristic: String {
+    case manhattan = "-m"
+    case nodePosition = "-n"
+    case euclideanDistance = "-e"
+}
 
+enum Algoritm: String {
+    case aStar = "-a"
+    case greedy = "-g"
+    case uniformCost = "-u"
+}
+
+final class PuzzleSolver {
+    
+    private var heuristic: Heuristic = .manhattan
+    private var algoritm: Algoritm = .aStar
+    
     private var openList = PriorityQueue<Matrix>()
     private var closedList = [Matrix]()
     
     private var startArray = [[Int]]()
     private var goalArray = [[Int]]()
     
-    private var counter = 0.0
-    private var timer = Timer()
+    private var startTime = Date()
+    private var finalTime = Date()
     
     private var openListMaxSize = 0
-
-    init(with array: [Int]) {
+    
+    init(with array: [Int], algoritm: Algoritm, heuristic: Heuristic) {
+        self.algoritm = algoritm
+        self.heuristic = heuristic
         self.startArray = make2DArray(array)
         
         let goal = Generator().makeGoal(with: startArray.count)
         self.goalArray = make2DArray(goal)
         
-        aStar()
+        if isSolvable(puzzle: array) {
+            aStar()
+        } else {
+            print("\nSorry, this puzzle is unsolvable.\nExit 🕳\n")
+        }
     }
     
     //MARK: - Basic logic
@@ -56,16 +77,17 @@ final class PuzzleSolver {
         PrintMatrix.printBorder(size: goalArray.count, style: .all)
         
         let matrix = Matrix(with: startArray)
-
+        
         openList.push(matrix)
         openListMaxSize = openList.count
-        startTimer()
+        
+        startTime = Date()
         repeat {
             // Get the square with the lowest F score
             let currentMatrix = obtainMatrixWithTheLowestF()
             
             PrintMatrix.printWay(with: currentMatrix, style: .all)
-
+            
             closedList.append(currentMatrix)
             openList.remove(currentMatrix)
             
@@ -73,7 +95,7 @@ final class PuzzleSolver {
             if currentMatrix.array == goalArray {
                 print("Success 🥰\n")
                 
-                pauseTimer()
+                finalTime = Date()
                 findClearWay(final: currentMatrix)
                 break
             }
@@ -86,7 +108,7 @@ final class PuzzleSolver {
                         matrix.g += 1
                         matrix.parentMatrix = currentMatrix
                         matrix.currentF = countFScore(for: matrix)
-
+                        
                         openList.push(matrix)
                     }
                 }
@@ -103,7 +125,7 @@ final class PuzzleSolver {
         var parentMatrix = matrix.parentMatrix
         
         clearWay.append(matrix)
-
+        
         repeat {
             if let pMatrix = parentMatrix {
                 clearWay.append(pMatrix)
@@ -112,7 +134,7 @@ final class PuzzleSolver {
                 parentMatrix = parent
             }
         } while parentMatrix != nil
-
+        
         print("Clear way:")
         PrintMatrix.printBorder(size: goalArray.count, style: .clear)
         
@@ -171,14 +193,26 @@ final class PuzzleSolver {
     }
     
     private func countFScore(for matrix: Matrix) -> Int {
-        var f = matrix.g
+        var f = algoritm == .greedy ? 0 : matrix.g
+        var h = 0
         
-        matrix.array.enumerated().forEach { (y, smallArray) in
-            smallArray.enumerated().forEach({ (x, element) in
-                let goalCoordinates = obtainCGPointFromGoalArray(for: element)
-                
-                f += CGPointManhattanDistance(from: CGPoint(x: x, y: y), to: goalCoordinates)
-            })
+        if algoritm != .uniformCost {
+            matrix.array.enumerated().forEach { (y, smallArray) in
+                smallArray.enumerated().forEach({ (x, element) in
+                    let goalCoordinates = obtainCGPointFromGoalArray(for: element)
+                    
+                    switch heuristic {
+                    case .manhattan:
+                        h = CGPointManhattanDistance(from: CGPoint(x: x, y: y), to: goalCoordinates)
+                    case .nodePosition:
+                        h = CGPointNodePosition(from: CGPoint(x: x, y: y), to: goalCoordinates)
+                    case .euclideanDistance:
+                        h = CGPointEuclideanDistance(from: CGPoint(x: x, y: y), to: goalCoordinates)
+                    }
+                    
+                    f += h
+                })
+            }
         }
         return f
     }
@@ -201,20 +235,19 @@ final class PuzzleSolver {
         return Int((abs(from.x - to.x) + abs(from.y - to.y)))
     }
     
-    //MARK: - Timer methods
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _  in
-            self.counter = self.counter + 0.01
+    func CGPointNodePosition(from: CGPoint, to: CGPoint) -> Int {
+        if from.x == to.x && from.y == to.y {
+            return 0
         }
+        return 1
     }
     
-    private func pauseTimer() {
-        timer.invalidate()
+    func CGPointEuclideanDistance(from: CGPoint, to: CGPoint) -> Int {
+        let xDist = to.x - from.x
+        let yDist = to.y - from.y
+        
+        return Int(sqrt(xDist * xDist + yDist * yDist))
     }
-    
-//    @objc func updateTimer(_ timer: Timer) {
-//        counter = counter + 0.01
-//    }
     
     // MARK: - Helpers
     private func make2DArray(_ array: [Int]) -> [[Int]] {
@@ -239,10 +272,49 @@ final class PuzzleSolver {
     }
     
     private func printInfo(with clearWay: [Matrix]) {
+        let diff = Calendar.current.dateComponents([Calendar.Component.minute, Calendar.Component.second, Calendar.Component.nanosecond], from: startTime, to: finalTime)
+        let minute = diff.minute ?? 0
+        let second = diff.second ?? 0
+        let nanosecond = diff.nanosecond ?? 0
+        
         print("\n🌈 In result:")
         print("Total number of states ever selected: \(closedList.count)")
         print("Maximum number of states ever represented in memory at the same time during the search: \(openListMaxSize)")
         print("Number of moves from initial state to solution: \(clearWay.count - 1)")
-        print("Complexity in time: \(String(format: "%.2f", counter))\n")
+        print("Complexity in time: \(minute):\(second):\(String(format:"%\(2)d", nanosecond))")
+        print("Exit 🕳\n")
+    }
+    
+    //MARK: - Solvability
+    private func isSolvable(puzzle: [Int]) -> Bool {
+        let parity = 0
+        let gridWidth = Int(sqrt(Double(puzzle.count)))
+        var row = 0
+        var blankRow = 0
+        
+        var solvable: Bool
+        
+        for i in puzzle {
+            if (i % gridWidth == 0) {
+                row += 1
+            }
+            if (puzzle[i] == 0) {
+                blankRow = row
+            }
+            
+            if (gridWidth % 2 == 0) {
+                if (blankRow % 2 == 0) {
+                    solvable = parity % 2 == 0
+                } else {
+                    solvable = parity % 2 != 0
+                }
+            } else {
+                solvable = parity % 2 == 0
+            }
+            if solvable {
+                
+            }
+        }
+        return basicSolvability == .solvable
     }
 }

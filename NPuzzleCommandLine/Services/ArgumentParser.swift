@@ -30,9 +30,13 @@ enum Arguments: String {
     }
 }
 
-typealias ArgumentsCompletion = ((_ size: Int?, _ iterations: Int?, _ solvability: Solvability?) -> Void)
+typealias ArgumentsCompletion = ((_ size: Int?, _ iterations: Int?, _ solvability: Solvability?, _ algoritm: Algoritm, _ heuristic: Heuristic) -> Void)
+var basicSolvability: Solvability = .solvable
 
 final class ArgumentParser {
+    
+    private var heuristic: Heuristic = .manhattan
+    private var algoritm: Algoritm = .aStar
     
     var solvability: Solvability?
     var iterations = 10000
@@ -48,21 +52,37 @@ final class ArgumentParser {
             guard let strongSelf = self else { return }
             
             if quit {
-                completion(nil, nil, nil)
+                completion(nil, nil, nil, strongSelf.algoritm, strongSelf.heuristic)
             } else {
                 strongSelf.obtainPassesCount { [weak self] quit in
                     guard let strongSelf = self else { return }
                     
                     if quit {
-                        completion(nil, nil, nil)
+                        completion(nil, nil, nil, strongSelf.algoritm, strongSelf.heuristic)
                     } else {
                         strongSelf.obtainSolvability { [weak self] quit in
                             guard let strongSelf = self else { return }
                             
                             if quit {
-                                completion(nil, nil, nil)
+                                completion(nil, nil, nil, strongSelf.algoritm, strongSelf.heuristic)
                             } else {
-                                completion(strongSelf.size, strongSelf.iterations, strongSelf.solvability)
+                                strongSelf.obtainAlgoritm(completion: { [weak self] quit in
+                                    guard let strongSelf = self else { return }
+                                    
+                                    if quit {
+                                        completion(nil, nil, nil, strongSelf.algoritm, strongSelf.heuristic)
+                                    } else {
+                                        strongSelf.obtainHeuristic(completion: { [weak self] quit in
+                                            guard let strongSelf = self else { return }
+                                            
+                                            if quit {
+                                                completion(nil, nil, nil, strongSelf.algoritm, strongSelf.heuristic)
+                                            } else {
+                                                completion(strongSelf.size, strongSelf.iterations, strongSelf.solvability, strongSelf.algoritm, strongSelf.heuristic)
+                                            }
+                                        })
+                                    }
+                                })
                             }
                         }
                     }
@@ -139,7 +159,7 @@ final class ArgumentParser {
             }
             
             if input == "yes" {
-                print("\nPlease enter parameter:\n [-s] - Forces generation of a solvable puzzle. Overrides -u.\n [-u] - Forces generation of an unsolvable puzzle")
+                print("\nPlease enter parameter:\n [-s] - Forces generation of a solvable puzzle, overrides -u\n [-u] - Forces generation of an unsolvable puzzle")
                 while let input = readLine() {
                     guard input != "quit" else {
                         completion?(true)
@@ -158,7 +178,7 @@ final class ArgumentParser {
                         input.contains(Arguments.unsolvable.rawValue) {
                         print("\nCan't be both solvable AND unsolvable, dummy! 🤯")
                     } else {
-                        print("\nPlease enter parameter:\n [-s] - Forces generation of a solvable puzzle. Overrides -u.\n [-u] - Forces generation of an unsolvable puzzle")
+                        print("\nPlease enter parameter:\n [-s] - Forces generation of a solvable puzzle, overrides -u\n [-u] - Forces generation of an unsolvable puzzle")
                     }
                 }
             } else if input == "no" {
@@ -167,6 +187,58 @@ final class ArgumentParser {
                 return
             } else {
                 print("\nPlease answer 'yes' or 'no'\nIf you want to exit, white 'quit'")
+            }
+        }
+    }
+    
+    private func obtainAlgoritm(completion: ((_ quit: Bool) -> Void)?) {
+        print("\nPlease choose main algoritm:\n [-a] - A-star algoritm (recommended)\n [-g] - Greedy search\n [-u] - Uniform-cost search")
+        while let input = readLine() {
+            guard input != "quit" else {
+                completion?(true)
+                return
+            }
+            
+            if input == Algoritm.aStar.rawValue {
+                algoritm = .aStar
+                completion?(false)
+                return
+            } else if input == Algoritm.greedy.rawValue {
+                algoritm = .greedy
+                completion?(false)
+                return
+            } else if input == Algoritm.uniformCost.rawValue {
+                algoritm = .uniformCost
+                completion?(false)
+                return
+            } else {
+                print("\nPlease choose main algoritm:\n [-a] - A-star algoritm (recommended)\n [-g] - Greedy search\n [-u] - Uniform-cost search")
+            }
+        }
+    }
+    
+    private func obtainHeuristic(completion: ((_ quit: Bool) -> Void)?) {
+        print("\nPlease choose heuristic method:\n [-m] - Manhattan distance (recommended)\n [-n] - Node position\n [-e] - Euclidean distance")
+        while let input = readLine() {
+            guard input != "quit" else {
+                completion?(true)
+                return
+            }
+            
+            if input == Heuristic.manhattan.rawValue {
+                heuristic = .manhattan
+                completion?(false)
+                return
+            } else if input == Heuristic.nodePosition.rawValue {
+                heuristic = .nodePosition
+                completion?(false)
+                return
+            } else if input == Heuristic.euclideanDistance.rawValue {
+                heuristic = .euclideanDistance
+                completion?(false)
+                return
+            } else {
+                print("\nPlease choose heuristic method:\n [-m] - Manhattan distance (recommended)\n [-n] - Node position\n [-e] - Euclidean distance")
             }
         }
     }
