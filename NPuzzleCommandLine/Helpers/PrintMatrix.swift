@@ -48,7 +48,7 @@ struct PrintMatrix {
         case .all:
             symbol = "➖"
         case .clear:
-            symbol = "🧩"
+            symbol = "🎲"
         }
         
         while lenth > 0 {

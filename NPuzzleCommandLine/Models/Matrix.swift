@@ -19,12 +19,14 @@ final class Matrix {
     init(with array: [[Int]]) {
         self.array = array
     }
-
+    
 }
 
 extension Matrix: Equatable {
     static func == (lhs: Matrix, rhs: Matrix) -> Bool {
-        return (lhs.array == rhs.array && lhs.g == rhs.g && lhs.parentMatrix == rhs.parentMatrix)
+        let arrayEquatable = compareArray(firstArray: lhs.array, secondArray: rhs.array)
+
+        return (arrayEquatable && lhs.g == rhs.g && lhs.parentMatrix == rhs.parentMatrix)
     }
 }
 
@@ -36,4 +38,18 @@ extension Matrix: Comparable {
 
 extension Array where Element == Equatable {
     
+}
+
+func compareArray(firstArray: [[Int]], secondArray: [[Int]]) -> Bool {
+    var arrayEquatable = true
+    if firstArray.count == secondArray.count {
+        firstArray.enumerated().forEach({ (index, smallArray) in
+            if smallArray != secondArray[index] {
+                arrayEquatable = false
+            }
+        })
+    } else {
+        arrayEquatable = false
+    }
+    return arrayEquatable
 }

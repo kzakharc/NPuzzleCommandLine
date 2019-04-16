@@ -92,8 +92,8 @@ final class PuzzleSolver {
             openList.remove(currentMatrix)
             
             /// Check if all ok
-            if currentMatrix.array == goalArray {
-                print("Success 🥰\n")
+            if compareArray(firstArray: currentMatrix.array, secondArray: goalArray) {
+                print("Success 😍\n")
                 
                 finalTime = Date()
                 findClearWay(final: currentMatrix)

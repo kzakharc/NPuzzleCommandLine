@@ -49,7 +49,7 @@ public struct PriorityQueue<T: Comparable> {
     }
 
     public mutating func remove(_ item: T) {
-        if let index = heap.firstIndex(of: item) {
+        if let index = heap.index(of: item) {
             heap.swapAt(index, heap.count - 1)
             heap.removeLast()
             if index < heap.count {
