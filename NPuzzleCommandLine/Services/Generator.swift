@@ -96,18 +96,6 @@ final class Generator {
             y += iy
             cur == size*size ? cur = 0 : ()
         }
-        
-        print("Fucking yea baby 😎")
-        puzzle.enumerated().forEach({ (index, element) in
-            if index == 0 || index % size == 0 {
-                print(element, terminator: "")
-            } else if (index + 1) % size == 0 {
-                print(" \(element)")
-            } else {
-                print(" \(element)", terminator: "")
-            }
-        })
-        print("Wow 🤩")
         return puzzle
     }
     
@@ -124,9 +112,10 @@ final class Generator {
                 strongSelf.size = customSize
                 
                 let solvabilityName = strongSelf.solvability == .solvable ? "solvable" : "unsolvable"
-                print("This puzzle is \(solvabilityName)\n\(strongSelf.size)")
+                print("\nThis puzzle is \(solvabilityName)\n\(strongSelf.size)")
                 
                 let puzzle = strongSelf.makePuzzle()
+
                 puzzle.enumerated().forEach({ (index, element) in
                     if index == 0 || index % strongSelf.size == 0 {
                         print(element, terminator: "")
@@ -136,7 +125,7 @@ final class Generator {
                         print(" \(element)", terminator: "")
                     }
                 })
-                
+
                 PuzzleSolver(with: puzzle)
             } else {
                 print("Exit 🕳")

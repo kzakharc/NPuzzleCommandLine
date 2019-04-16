@@ -29,14 +29,17 @@ enum Move {
 }
 
 final class PuzzleSolver {
+
+    private var openList = PriorityQueue<Matrix>()
+    private var closedList = [Matrix]()
     
-    //var openList = [Matrix]()
-    var openList = PriorityQueue<Matrix>()
+    private var startArray = [[Int]]()
+    private var goalArray = [[Int]]()
     
-    var closedList = [Matrix]()
+    private var counter = 0.0
+    private var timer = Timer()
     
-    var startArray = [[Int]]()
-    var goalArray = [[Int]]()
+    private var openListMaxSize = 0
 
     init(with array: [Int]) {
         self.startArray = make2DArray(array)
@@ -47,25 +50,31 @@ final class PuzzleSolver {
         aStar()
     }
     
+    //MARK: - Basic logic
     func aStar() {
-        print("All the way:")
-        printBorder(size: goalArray.count)
+        print("\nAll the way:")
+        PrintMatrix.printBorder(size: goalArray.count, style: .all)
         
         let matrix = Matrix(with: startArray)
 
         openList.push(matrix)
+        openListMaxSize = openList.count
+        startTimer()
         repeat {
             // Get the square with the lowest F score
             let currentMatrix = obtainMatrixWithTheLowestF()
             
-            printAllWay(with: currentMatrix)
+            PrintMatrix.printWay(with: currentMatrix, style: .all)
 
             closedList.append(currentMatrix)
             openList.remove(currentMatrix)
             
             /// Check if all ok
             if currentMatrix.array == goalArray {
-                print("Success 🥰")
+                print("Success 🥰\n")
+                
+                pauseTimer()
+                findClearWay(final: currentMatrix)
                 break
             }
             
@@ -82,8 +91,37 @@ final class PuzzleSolver {
                     }
                 }
             }
-            
+            if openList.count > openListMaxSize {
+                openListMaxSize = openList.count
+            }
         } while !openList.isEmpty
+    }
+    
+    private func findClearWay(final matrix: Matrix) {
+        
+        var clearWay = [Matrix]()
+        var parentMatrix = matrix.parentMatrix
+        
+        clearWay.append(matrix)
+
+        repeat {
+            if let pMatrix = parentMatrix {
+                clearWay.append(pMatrix)
+                
+                let parent = pMatrix.parentMatrix
+                parentMatrix = parent
+            }
+        } while parentMatrix != nil
+
+        print("Clear way:")
+        PrintMatrix.printBorder(size: goalArray.count, style: .clear)
+        
+        var index = clearWay.count - 1
+        while index >= 0 {
+            PrintMatrix.printWay(with: clearWay[index], style: .clear)
+            index -= 1
+        }
+        printInfo(with: clearWay)
     }
     
     private func obtainNextMatrices(for current: Matrix) -> [Matrix] {
@@ -163,6 +201,21 @@ final class PuzzleSolver {
         return Int((abs(from.x - to.x) + abs(from.y - to.y)))
     }
     
+    //MARK: - Timer methods
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _  in
+            self.counter = self.counter + 0.01
+        }
+    }
+    
+    private func pauseTimer() {
+        timer.invalidate()
+    }
+    
+//    @objc func updateTimer(_ timer: Timer) {
+//        counter = counter + 0.01
+//    }
+    
     // MARK: - Helpers
     private func make2DArray(_ array: [Int]) -> [[Int]] {
         let count = Int(sqrt(Double(array.count)))
@@ -183,5 +236,13 @@ final class PuzzleSolver {
             index == array.count - 1 ? doubleArray.append(smallArray) : ()
         }
         return doubleArray
+    }
+    
+    private func printInfo(with clearWay: [Matrix]) {
+        print("\n🌈 In result:")
+        print("Total number of states ever selected: \(closedList.count)")
+        print("Maximum number of states ever represented in memory at the same time during the search: \(openListMaxSize)")
+        print("Number of moves from initial state to solution: \(clearWay.count - 1)")
+        print("Complexity in time: \(String(format: "%.2f", counter))\n")
     }
 }

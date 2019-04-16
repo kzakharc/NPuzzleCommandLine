@@ -72,7 +72,7 @@ final class ArgumentParser {
     }
     
     private  func obtainPuzzleSize(completion: ((_ quit: Bool) -> Void)?) {
-        print("Please enter size of the puzzle's side. Must be > 2.\"\nIf you want to exit, white 'quit'")
+        print("Please enter size of the puzzle's side. Must be > 2.\"\n\nIf you want to exit, white 'quit'")
         while let input = readLine() {
             guard input != "quit" else {
                 completion?(true)
@@ -85,16 +85,16 @@ final class ArgumentParser {
                     completion?(false)
                     return
                 } else {
-                    print("Can't generate a puzzle with size lower than 3. It says so in the usage. Dummy.")
+                    print("\nCan't generate a puzzle with size lower than 3. It says so in the usage. Dummy.")
                 }
             } else {
-                print("Please enter correct size of the puzzle's side. It must be integer and > 2.")
+                print("\nPlease enter correct size of the puzzle's side. It must be integer and > 2.")
             }
         }
     }
     
     private func obtainPassesCount(completion: ((_ quit: Bool) -> Void)?) {
-        print("Do you want to setup a specific number of iterations? - yes/no")
+        print("\nDo you want to setup a specific number of iterations? - yes/no")
         while let input = readLine() {
             guard input != "quit" else {
                 completion?(true)
@@ -102,7 +102,7 @@ final class ArgumentParser {
             }
             
             if input == "yes" {
-                print("Please enter number of passes")
+                print("\nPlease enter number of passes")
                 while let input = readLine() {
                     guard input != "quit" else {
                         completion?(true)
@@ -115,23 +115,23 @@ final class ArgumentParser {
                             completion?(false)
                             return
                         } else {
-                            print("Number of passes must be > 0 and <= 10000.")
+                            print("\nNumber of passes must be > 0 and <= 10000.")
                         }
                     } else {
-                        print("Please enter correct number of passes. It must be integer and > 0.")
+                        print("\nPlease enter correct number of passes. It must be integer and > 0.")
                     }
                 }
             } else if input == "no" {
                 completion?(false)
                 return
             } else {
-                print("Please answer 'yes' or 'no'\nIf you want to exit, white 'quit'")
+                print("\nPlease answer 'yes' or 'no'\nIf you want to exit, white 'quit'")
             }
         }
     }
     
     private func obtainSolvability(completion: ((_ quit: Bool) -> Void)?) {
-        print("Do you want to set the puzzle solvability? - yes/no")
+        print("\nDo you want to set the puzzle solvability? - yes/no")
         while let input = readLine() {
             guard input != "quit" else {
                 completion?(true)
@@ -139,7 +139,7 @@ final class ArgumentParser {
             }
             
             if input == "yes" {
-                print("Please enter parameter:\n[-s] - Forces generation of a solvable puzzle. Overrides -u.\n[-u] - Forces generation of an unsolvable puzzle")
+                print("\nPlease enter parameter:\n [-s] - Forces generation of a solvable puzzle. Overrides -u.\n [-u] - Forces generation of an unsolvable puzzle")
                 while let input = readLine() {
                     guard input != "quit" else {
                         completion?(true)
@@ -156,17 +156,17 @@ final class ArgumentParser {
                         return
                     } else if input.contains(Arguments.solvable.rawValue) &&
                         input.contains(Arguments.unsolvable.rawValue) {
-                        print("Can't be both solvable AND unsolvable, dummy! 🤯")
+                        print("\nCan't be both solvable AND unsolvable, dummy! 🤯")
                     } else {
-                        print("Please enter parameter:\n[-s] - Forces generation of a solvable puzzle. Overrides -u.\n[-u] - Forces generation of an unsolvable puzzle")
+                        print("\nPlease enter parameter:\n [-s] - Forces generation of a solvable puzzle. Overrides -u.\n [-u] - Forces generation of an unsolvable puzzle")
                     }
                 }
             } else if input == "no" {
-                print("Thanks, solvability of the puzzle will be selected randomly.")
+                print("\nThanks, solvability of the puzzle will be selected randomly.")
                 completion?(false)
                 return
             } else {
-                print("Please answer 'yes' or 'no'\nIf you want to exit, white 'quit'")
+                print("\nPlease answer 'yes' or 'no'\nIf you want to exit, white 'quit'")
             }
         }
     }
